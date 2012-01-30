@@ -1,0 +1,1 @@
+log('baz.js loaded..');

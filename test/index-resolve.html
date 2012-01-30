@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <title>YUILoader standalone</title>
+    <style>
+        pre {
+            border: 1px solid black;
+            font-size: 145%;
+            padding: 1em;
+            background-color: #F8F8FF;
+        }
+    </style>
+</head>
+<body>
+<h1>YUILoader stand-alone</h1>
+
+<pre id="out"></pre>
+
+<script src="https://gist.github.com/259db240aed40a0b3bbf.js?file=html.html"></script>
+<script src="https://gist.github.com/259db240aed40a0b3bbf.js?file=script.js"></script>
+
+<script src="../build/loader-min.js"></script>
+<script>
+(function() {
+var loader = new YUILoader({
+    root: '',
+    base: '',
+    groups: {
+        local: {
+            combine: true,
+            comboBase: 'http://foobar.com/combo?',
+            modules: {
+                foo: {
+                    type: 'js',
+                    path: 'foo/foo.js',
+                    requires: [ 'bar', 'baz' ]
+                },
+                baz: 'path/to/baz.js',
+                bar: 'bar.js',
+                somecss: 'my/css/files.css'
+            }
+        }
+    },
+    require: [ 'foo', 'somecss' ]
+});
+
+var out = loader.resolve(true);
+
+var res = document.getElementById('out');
+var str = 'LOADER OUTPUT:\n';
+str += 'Scripts: ' + out.js[0] + '\n';
+str += 'CSS: ' + out.css[0];
+
+res.innerHTML = str;
+
+}());
+
+</script>
+</body>
+</html>

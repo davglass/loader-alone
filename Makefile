@@ -1,0 +1,2 @@
+all:
+	./scripts/concat.sh

@@ -1,0 +1,12 @@
+body {
+    background-color: yellow;
+}
+
+#out {
+    background-color: blue;
+    font-weight: bold;
+}
+
+#logger {
+    color: black;
+}
