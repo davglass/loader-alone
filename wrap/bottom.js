@@ -5,12 +5,15 @@ YUI.Env.core.push('yui-log');
 YUI.GlobalConfig = {
     modules: {
         'loader-yui3': {
+            combine: true,
             requires: [ 'loader-base' ]
         },
         'features': {
+            combine: true,
             requires: [ 'loader-base' ]
         },
         'intl-base': {
+            combine: true,
             requires: [ 'loader-base' ]
         }
     }
