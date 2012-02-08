@@ -72,22 +72,41 @@ Then it wraps that code with something like this:
 
     window.YUILoader = Y.Loader;
 
-    Y.Loader.prototype.load = function(cb) {
-        var self = this,
-            out = self.resolve(true);
-        
-        self.data = out;
-            
-        self.onEnd = function() {
-            cb.apply(self.context || window, arguments);
+    Y.Loader.expose = Y.Loader.prototype.expose = function(cb) {
+        YUI.Env.core = [].concat(YUI.Env.core, ['loader-yui3', 'features', 'intl-base']);
+        if (!window.YUI) { //Have to globally expose now for YUI.add calls.
+            window.YUI = YUI;
         }
-
-        self.insert();
+        Y.use('loader-yui3', 'features', 'intl-base', function() {
+            delete YUI.Env._loader;
+            delete YUI.Env._renderedMods;
+            
+            cb(window.YUI);
+        });
     }
+
 
 }());
 ```
 
 This wrapping code is boilerplate for forcing YUI to attach itself to the `exports` object.
 Then augment the core to autoload the `loader-base` module, then expose a global `YUILoader` var.
-Then it adds a `load` method into Loader's prototype and does all the `Loader` magic.
+Then it adds a `expose` method as a static method and into Loader's prototype.
+This method is used to expose the exported `YUI` module and fetch the other parts of `YUI` needed
+to make it fully functional (features, loader metadata, intl-base).
+
+Exposing YUI
+------------
+
+This prototype scopes the global `YUI` onto a local `exports` object, holding it in a private scope
+so that it only exposes `Loader` globally. Maybe you want to load simple modules up front, but later
+on in your code you need other things from the library. That's where `expose` comes in. Simply
+call `YUILoader.expose(cb)` with a callback and `Loader` will fetch the parts of YUI it needs to
+complete the transaction and fire your callback when all the dependencies are complete.
+
+
+```javascript
+YUILoader.expose(function() {
+    YUI().use('node', fn);
+});
+```
